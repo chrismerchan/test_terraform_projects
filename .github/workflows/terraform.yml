@@ -71,6 +71,10 @@ jobs:
         terraform_wrapper: false
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+    - name: Setup AWS Account for docker push
+      working-directory: "/home/runner/work/test_terraform_projects/test_terraform_projects/"
+      run: "aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 704246131615.dkr.ecr.us-west-2.amazonaws.com"
+
     - name: Setup github
       working-directory: "/home/runner/work/test_terraform_projects/test_terraform_projects/tests/"
       run: go mod init "github.com/chrismerchan/aws_s3_terratest"
