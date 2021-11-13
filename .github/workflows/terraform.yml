@@ -57,6 +57,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+
     - name: Setup Golang Environment
       uses: actions/setup-go@v2
 
@@ -68,15 +72,15 @@ jobs:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     - name: Setup github
-      working-directory: "/home/runner/work/terraform-aws-projects/terraform-aws-projects/tests/"
+      working-directory: "/home/runner/work/test-terraform-projects/test-terraform-projects/tests/"
       run: go mod init "github.com/chrismerchan/aws_s3_terratest"
 
     - name: Dependencies
-      working-directory: "/home/runner/work/terraform-aws-projects/terraform-aws-projects/tests/"
+      working-directory: "/home/runner/work/test-terraform-projects/test-terraform-projects/tests/"
       run: go mod tidy  
 
     - name: Terratest
-      working-directory: "/home/runner/work/terraform-aws-projects/terraform-aws-projects/tests/"
+      working-directory: "/home/runner/work/test-terraform-projects/test-terraform-projects/tests/"
       run: go test -run TestS3EC2 -timeout 30m
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
