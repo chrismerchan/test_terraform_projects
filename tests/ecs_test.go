@@ -35,7 +35,7 @@ import (
 	})
   
 	// We want to destroy the infrastructure after testing.
-	//defer terraform.Destroy(t, terraformOpts)
+	defer terraform.Destroy(t, terraformOpts)
   
 	// Deploy the infrastructure with the options defined above
 	terraform.InitAndApply(t, terraformOpts)
