@@ -6,31 +6,37 @@
 
 variable "aws_region" {
   type = string
+  default = "us-west-2"
   description = "AWS region"
 }
 
 variable "app_name" {
   type = string
+  default = "my-ecs-app"
   description = "Application name"
 }
 
 variable "app_environment" {
   type = string
+  default = "Dev"
   description = "Application environment"
 }
 
 variable "aws_key_pair_name" {
   type = string
+  default = ""
   description = "AWS key pair name"
 }
 
 variable "admin_sources_cidr" {
   type = list(string)
+  default = ["10.20.0.0/24"]
   description = "List of IPv4 CIDR blocks from which to allow admin access"
 }
 
 variable "app_sources_cidr" {
   type = list(string)
+  default = ["10.20.100.0/24"]
   description = "List of IPv4 CIDR blocks from which to allow application access"
 }
 
@@ -60,12 +66,15 @@ variable "image_docker_name" {
 }
 
 variable "nginx_app_name" {
+  type = string
   description = "Name of Application Container"
   default = "mynginx"
 }
 
 // by default is a image with nginx + phyton static web page
 variable "nginx_app_image" {
+  type = string
+  default = "nginx:alpine"
   description = "Docker image to run in the ECS cluster"
 }
 
