@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 	
+	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
@@ -40,12 +41,23 @@ import (
 	terraform.InitAndApply(t, terraformOpts)
   
 	// Get the bucket ID so we can query AWS
+	bucketID := terraform.Output(t, terraformOpts, "bucket_id")
+
+	// Get the EC2 Instance ID so we can query AWS
+	instanceID := terraform.Output(t, terraformOpts, "instance_id")
+
+	// Get the DNS so we can query AWS
 	dnsalb := terraform.Output(t, terraformOpts, "nginx_dns_lb")
 
 	time.Sleep(120 * time.Second)
 
 	tlsConfig := tls.Config{}
 	statusCode, body := http_helper.HttpGet(t, fmt.Sprintf("http://%s", dnsalb), &tlsConfig)
+
+	// check exists bucket AWS S3
+	aws.AssertS3BucketExists(t, awsRegion, bucketID)
+	// check exists instance EC2
+	assert.Contains(t, instanceID, "Flugel")
 
 	assert.Equal(t, 200, statusCode)
 	assert.NotNil(t, body)
