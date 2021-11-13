@@ -114,7 +114,7 @@ resource "aws_iam_role_policy" "ecs-cluster-runner-role-policy" {
 }
 
 resource "aws_iam_instance_profile" "ecs-cluster-runner-profile" {
-  name = "${var.app_name}-cluster-runner-iam-profile"
+  name = "${var.app_name}-cluster-runner-iam-prof"
   role = aws_iam_role.ecs-cluster-runner-role.name
 }
 
