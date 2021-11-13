@@ -56,7 +56,7 @@ output "instance_id" {
 // Amazon ECS configuration
 /////////////////////////////////////
 
-/*module "ecs_main" {
+module "ecs_main" {
   source = "../ecs-module/"
 
   app_name           = "my-ecs-app"
@@ -71,25 +71,4 @@ output "instance_id" {
 output "nginx_dns_lb" {
   description = "DNS load balancer"
   value = module.ecs_main.nginx_dns_lb 
-}*/
-
-resource "null_resource" "docker"{
-  provisioner "local-exec" {
-    command = <<EOF
-echo "from flask import Flask
-app = Flask(__name__)
-
-@app.route(\"/\")
-def hello():
-  return \"<!DOCTYPE html><html><head><title>AWS Challenge</title><h1>AWS EC2 Tag Instances:</h1></head><body>${ aws_s3_bucket.s3_example.id}</body></html>\"
-
-if __name__ == \"__main__\":
-    # Only for debugging while developing
-    app.run(host='0.0.0.0', debug=True, port=80)
-" > ./app/main.py;
- docker build -f Dockerfile -t ${var.image_docker_name} . ;
- docker tag ${var.image_docker_name}:latest ${var.nginx_app_image};
- docker push ${var.nginx_app_image};
-EOF  
-  }
 }
