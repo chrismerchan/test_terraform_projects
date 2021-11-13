@@ -74,8 +74,7 @@ variable "nginx_app_name" {
 // by default is a image with nginx + phyton static web page
 variable "nginx_app_image" {
   type = string
-  value = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest" // eliminar 
-  default = "nginx:alpine"
+  value = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest"  
   description = "Docker image to run in the ECS cluster"
 }
 
