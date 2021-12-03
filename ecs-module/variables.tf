@@ -16,17 +16,9 @@ variable "app_name" {
   description = "Application name"
 }
 
-variable "app_environment" {
-  type = string
-  default = "Dev"
-  description = "Application environment"
-}
-
-variable "aws_key_pair_name" {
-  type = string
-  default = ""
-  description = "AWS key pair name"
-}
+/////////////////////////////////////////
+// Variables CIDR Security Group
+/////////////////////////////////////////
 
 variable "admin_sources_cidr" {
   type = list(string)
@@ -39,6 +31,10 @@ variable "app_sources_cidr" {
   default = ["10.20.100.0/24"]
   description = "List of IPv4 CIDR blocks from which to allow application access"
 }
+
+/////////////////////////////////////////
+// Variables ECS
+/////////////////////////////////////////
 
 variable "cluster_runner_type" {
   type = string
@@ -53,29 +49,37 @@ variable "cluster_runner_count" {
   description = "Number of EC2 instances for ECS Cluster Runner" 
   default = "2"
 }
-variable "separator" {
-  type = string
-  description = "Separator character" 
-  default = "\",\""
-}
 
-variable "image_docker_name" {
+variable "aws_key_pair_name" {
+  type = string
+  default = ""
+  description = "AWS key pair name"
+}
+/////////////////////////////////////////
+// Variables Docker 
+/////////////////////////////////////////
+
+variable "docker_image_name" {
   type = string
   description = "Docker image name" 
   default = "my-nginx-ecs"
 }
 
+// by default is a docker image (with nginx + phyton + webpage) in ECR
+variable "ecr_app_image" {
+  type = string
+  default = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest"  
+  description = "Docker image name in ECR"
+}
+
+/////////////////////////////////////////
+// Variables Nginx App Container
+///////////////////////////////////////// 
+
 variable "nginx_app_name" {
   type = string
   description = "Name of Application Container"
   default = "mynginx"
-}
-
-// by default is a image with nginx + phyton static web page
-variable "nginx_app_image" {
-  type = string
-  default = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest"  
-  description = "Docker image to run in the ECS cluster"
 }
 
 variable "nginx_app_port" {
@@ -97,3 +101,20 @@ variable "nginx_fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
   default = "2048"
 }
+
+/////////////////////////////////////////
+// Utilities
+/////////////////////////////////////////
+
+variable "separator" {
+  type = string
+  description = "Separator character" 
+  default = "\",\""
+}
+
+variable "app_environment" {
+  type = string
+  default = "Dev"
+  description = "Application environment"
+}
+

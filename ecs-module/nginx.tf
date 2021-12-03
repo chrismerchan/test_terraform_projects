@@ -8,7 +8,7 @@ data "template_file" "nginx_app" {
   template = "${file("${path.module}/templates/nginx.json")}"  
   vars = {
     app_name = var.nginx_app_name
-    app_image = var.nginx_app_image
+    app_image = var.ecr_app_image
     app_port = var.nginx_app_port
     fargate_cpu = var.nginx_fargate_cpu
     fargate_memory = var.nginx_fargate_memory
@@ -37,9 +37,9 @@ if __name__ == \"__main__\":
     # Only for debugging while developing
     app.run(host='0.0.0.0', debug=True, port=80)
 " > ./app/main.py;
- docker build -f Dockerfile -t ${var.image_docker_name} . ;
- docker tag ${var.image_docker_name}:latest ${var.nginx_app_image};
- docker push ${var.nginx_app_image};
+ docker build -f Dockerfile -t ${var.docker_image_name} . ;
+ docker tag ${var.docker_image_name}:latest ${var.ecr_app_image};
+ docker push ${var.ecr_app_image};
 EOF  
   }
 }

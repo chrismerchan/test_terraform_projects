@@ -25,7 +25,7 @@ data "aws_ami" "ecs-ami" {
   }
   owners = ["amazon"]
 }
-
+/*
 variable "aws_ecs_ami_override" {
   default = ""
   description = "Machine image to use for ec2 instances"
@@ -88,7 +88,7 @@ locals {
     "c5d.18xlarge" = 140768
   }
 }
-
+*/
 resource "aws_iam_role" "ecs-cluster-runner-role" {
   name = "${var.app_name}-cluster-runner-role"
   assume_role_policy = data.aws_iam_policy_document.instance-assume-role.json
@@ -126,7 +126,8 @@ data "template_file" "user_data_cluster" {
 }
 
 resource "aws_instance" "ecs-cluster-runner" {
-  ami = local.aws_ecs_ami
+  //ami = local.aws_ecs_ami
+  ami = data.aws_ami.ecs-ami.id 
   instance_type = var.cluster_runner_type
   subnet_id = element(aws_subnet.aws-subnet.*.id, 0)
   vpc_security_group_ids = [aws_security_group.ecs-cluster-host.id]

@@ -65,7 +65,7 @@ module "ecs_main" {
   app_sources_cidr   = ["10.20.100.0/24"]
   admin_sources_cidr = ["10.20.0.0/24"]
   aws_key_pair_name  = "kruger"
-  nginx_app_image    = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest"
+  ecr_app_image    = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest"
 }
 
 output "nginx_dns_lb" {
