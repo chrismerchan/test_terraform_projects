@@ -9,13 +9,17 @@ data "aws_availability_zones" "aws-az" {
 }
 
 resource "aws_vpc" "aws-vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.vpc_cidr
   enable_dns_hostnames = true
   tags = {
     Name = "${var.app_name}-vpc"
     Environment = var.app_environment
   }
 }
+
+/////////////////////////////////////////
+// VPC Subnet Definition
+/////////////////////////////////////////
 
 resource "aws_subnet" "aws-subnet" {
   count = length(data.aws_availability_zones.aws-az.names)
@@ -29,6 +33,10 @@ resource "aws_subnet" "aws-subnet" {
   }
 }
 
+/////////////////////////////////////////
+// VPC Internet Gateway Definition
+/////////////////////////////////////////
+
 resource "aws_internet_gateway" "aws-igw" {
   vpc_id = aws_vpc.aws-vpc.id
   tags = {
@@ -36,6 +44,10 @@ resource "aws_internet_gateway" "aws-igw" {
     Environment = var.app_environment
   }
 }
+
+/////////////////////////////////////////
+// VPC Route table Definition
+/////////////////////////////////////////
 
 resource "aws_route_table" "aws-route-table" {
   vpc_id = aws_vpc.aws-vpc.id
@@ -48,6 +60,10 @@ resource "aws_route_table" "aws-route-table" {
     Environment = var.app_environment
   }
 }
+
+/////////////////////////////////////////
+// VPC VPC-Route table association
+/////////////////////////////////////////
 
 resource "aws_main_route_table_association" "aws-route-table-association" {
   vpc_id = aws_vpc.aws-vpc.id

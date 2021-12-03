@@ -14,12 +14,6 @@ resource "aws_security_group" "aws-lb" {
     to_port = var.nginx_app_port
     cidr_blocks = var.app_sources_cidr
   }
-  ingress {
-    protocol = "tcp"
-    from_port = var.nginx_app_port
-    to_port = var.nginx_app_port
-    cidr_blocks = ["0.0.0.0/0"]
-    }
 
   egress {
     protocol = "-1"

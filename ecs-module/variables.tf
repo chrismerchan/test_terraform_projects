@@ -6,30 +6,36 @@
 
 variable "aws_region" {
   type = string
+  description = "AWS region"  
   default = "us-west-2"
-  description = "AWS region"
 }
 
 variable "app_name" {
   type = string
+  description = "Application name"  
   default = "my-ecs-app"
-  description = "Application name"
 }
 
 /////////////////////////////////////////
 // Variables CIDR Security Group
 /////////////////////////////////////////
 
+variable "vpc_cidr" {
+  type = string
+  description = "VPC IPv4 CIDR blocks"
+  default = "10.0.0.0/16"
+}
+
 variable "admin_sources_cidr" {
   type = list(string)
-  default = ["10.20.0.0/24"]
   description = "List of IPv4 CIDR blocks from which to allow admin access"
+  default = ["0.0.0.0/0"]
 }
 
 variable "app_sources_cidr" {
   type = list(string)
-  default = ["10.20.100.0/24"]
   description = "List of IPv4 CIDR blocks from which to allow application access"
+  default = ["0.0.0.0/0"]
 }
 
 /////////////////////////////////////////
@@ -52,8 +58,8 @@ variable "cluster_runner_count" {
 
 variable "aws_key_pair_name" {
   type = string
-  default = ""
   description = "AWS key pair name"
+  default = "kruger"
 }
 /////////////////////////////////////////
 // Variables Docker 
@@ -68,8 +74,8 @@ variable "docker_image_name" {
 // by default is a docker image (with nginx + phyton + webpage) in ECR
 variable "ecr_app_image" {
   type = string
-  default = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest"  
   description = "Docker image name in ECR"
+  default = "704246131615.dkr.ecr.us-west-2.amazonaws.com/my-nginx-ecs:latest"  
 }
 
 /////////////////////////////////////////
@@ -106,12 +112,12 @@ variable "nginx_app_count" {
 
 variable "nginx_fargate_cpu" {
   description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
-  default = "1024"
+  default = "512"
 }
 
 variable "nginx_fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
-  default = "2048"
+  default = "1024"
 }
 
 /////////////////////////////////////////
@@ -126,7 +132,7 @@ variable "separator" {
 
 variable "app_environment" {
   type = string
-  default = "Dev"
   description = "Application environment"
+  default = "Dev"
 }
 

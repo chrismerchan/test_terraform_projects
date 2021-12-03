@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "nginx_app" {
 }
 
 /////////////////////////////////////////
-// ECS Service Definition
+// ECS Fargate Service Definition
 /////////////////////////////////////////
 
 resource "aws_ecs_service" "nginx_app" {
