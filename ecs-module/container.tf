@@ -1,9 +1,12 @@
 /**************************************
 *
-* Nginx App Container configuration
+* ECS Container configuration
 *
 ***************************************/
 
+/////////////////////////////////////////
+// ECS Container Definition
+/////////////////////////////////////////
 data "template_file" "nginx_app" {
   template = "${file("${path.module}/templates/nginx.json")}"  
   vars = {
@@ -15,6 +18,11 @@ data "template_file" "nginx_app" {
     aws_region = var.aws_region
   }
 }
+
+/////////////////////////////////////////
+// Define main.py with EC2 instance names
+// Upload docker image in ECR
+/////////////////////////////////////////
 
 resource "null_resource" "instances" {
   count = var.cluster_runner_count
@@ -44,6 +52,9 @@ EOF
   }
 }
 
+/////////////////////////////////////////
+// ECS Task Definition
+/////////////////////////////////////////
 
 resource "aws_ecs_task_definition" "nginx_app" {
   family = "${var.app_name}-task"
@@ -56,6 +67,10 @@ resource "aws_ecs_task_definition" "nginx_app" {
 
   depends_on = [null_resource.docker]
 }
+
+/////////////////////////////////////////
+// ECS Service Definition
+/////////////////////////////////////////
 
 resource "aws_ecs_service" "nginx_app" {
   name = var.nginx_app_name

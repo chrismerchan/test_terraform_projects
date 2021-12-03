@@ -95,7 +95,7 @@ Terraform project have a structure:
 - alb.tf
 - ecs-policy.tf
 - ecs.tf
-- nginx.tf
+- container.tf
 - security-groups.tf
 - vpc.tf
 - variables.tf
@@ -131,7 +131,7 @@ systemctl try-restart ecs --no-block
 
 Another configuration is the control of traffic ingress and egress. Ingress only for admin network and egress for default.
 
-File `nginx.tf` defines a structure for creation of container, in this project the container will have a Nginx image with Python. At beginning of this process is necessary to create a new image based in a public image from hub.docker.com chrismerchan/uwsgi-nginx-flask:python3.10. The new image will upload to AWS ECR for the next steps in the creation of containers.
+File `container.tf` defines a structure for creation of container, in this project the container will have a Nginx image with Python. At beginning of this process is necessary to create a new image based in a public image from hub.docker.com chrismerchan/uwsgi-nginx-flask:python3.10. The new image will upload to AWS ECR for the next steps in the creation of containers.
 
 File `security-group.tf` defines the virtual firewall to control inbound and outbound traffic, in from ALB and target group of containers.
 

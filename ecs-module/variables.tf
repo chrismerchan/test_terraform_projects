@@ -99,7 +99,7 @@ variable "nginx_fargate_cpu" {
 
 variable "nginx_fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
-  default = "2048"
+  default = "1024"
 }
 
 /////////////////////////////////////////

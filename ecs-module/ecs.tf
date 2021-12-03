@@ -13,6 +13,10 @@ resource "aws_ecs_cluster" "aws-ecs" {
   name = var.app_name
 }
 
+/////////////////////////////////////////
+// ECS Instance AMI 
+/////////////////////////////////////////
+
 data "aws_ami" "ecs-ami" {
   most_recent = true
   filter {
@@ -24,74 +28,6 @@ data "aws_ami" "ecs-ami" {
     values = ["x86_64"]
   }
   owners = ["amazon"]
-}
-/*
-variable "aws_ecs_ami_override" {
-  default = ""
-  description = "Machine image to use for ec2 instances"
-}
-
-locals {
-  aws_ecs_ami = var.aws_ecs_ami_override == "" ? data.aws_ami.ecs-ami.id : var.aws_ecs_ami_override
-}
-
-locals {
-  ebs_types = ["t2", "t3", "m5", "c5"]
-  cpu_by_instance = {
-    "t2.small"     = 1024
-    "t2.large"     = 2048
-    "t2.medium"    = 2048
-    "t2.xlarge"    = 4096
-    "t3.medium"    = 2048
-    "m5.large"     = 2048
-    "m5.xlarge"    = 4096
-    "m5.2xlarge"   = 8192
-    "m5.4xlarge"   = 16384
-    "m5.12xlarge"  = 49152
-    "m5.24xlarge"  = 98304
-    "c5.large"     = 2048
-    "c5d.large"    = 2048
-    "c5.xlarge"    = 4096
-    "c5d.xlarge"   = 4096
-    "c5.2xlarge"   = 8192
-    "c5d.2xlarge"  = 8192
-    "c5.4xlarge"   = 16384
-    "c5d.4xlarge"  = 16384
-    "c5.9xlarge"   = 36864
-    "c5d.9xlarge"  = 36864
-    "c5.18xlarge"  = 73728
-    "c5d.18xlarge" = 73728
-  }
-  mem_by_instance = {
-    "t2.small"     = 1800
-    "t2.medium"    = 3943
-    "t2.large"     = 7975
-    "t2.xlarge"    = 16039
-    "t3.medium"    = 3884
-    "m5.large"     = 7680
-    "m5.xlarge"    = 15576
-    "m5.2xlarge"   = 31368
-    "m5.4xlarge"   = 62950
-    "m5.12xlarge"  = 189283
-    "m5.24xlarge"  = 378652
-    "c5.large"     = 3704
-    "c5d.large"    = 3704
-    "c5.xlarge"    = 7624
-    "c5d.xlarge"   = 7624
-    "c5.2xlarge"   = 15463
-    "c5d.2xlarge"  = 15463
-    "c5.4xlarge"   = 31142
-    "c5d.4xlarge"  = 31142
-    "c5.9xlarge"   = 70341
-    "c5d.9xlarge"  = 70341
-    "c5.18xlarge"  = 140768
-    "c5d.18xlarge" = 140768
-  }
-}
-*/
-resource "aws_iam_role" "ecs-cluster-runner-role" {
-  name = "${var.app_name}-cluster-runner-role"
-  assume_role_policy = data.aws_iam_policy_document.instance-assume-role.json
 }
 
 data "aws_caller_identity" "current" {}
@@ -107,17 +43,6 @@ data "aws_iam_policy_document" "ecs-cluster-runner-policy" {
   }
 }
 
-resource "aws_iam_role_policy" "ecs-cluster-runner-role-policy" {
-  name = "${var.app_name}-cluster-runner-policy"
-  role = aws_iam_role.ecs-cluster-runner-role.name
-  policy = data.aws_iam_policy_document.ecs-cluster-runner-policy.json
-}
-
-resource "aws_iam_instance_profile" "ecs-cluster-runner-profile" {
-  name = "${var.app_name}-cluster-runner-iam-prof"
-  role = aws_iam_role.ecs-cluster-runner-role.name
-}
-
 data "template_file" "user_data_cluster" {
   template = "${file("${path.module}/templates/cluster_user_data.sh")}"
   vars = { 
@@ -125,8 +50,31 @@ data "template_file" "user_data_cluster" {
   }
 }
 
+/////////////////////////////////////////
+// ECS Role & Policy Definition
+/////////////////////////////////////////
+
+resource "aws_iam_role_policy" "ecs-cluster-runner-role-policy" {
+  name = "${var.app_name}-cluster-runner-policy"
+  role = aws_iam_role.ecs-cluster-runner-role.name
+  policy = data.aws_iam_policy_document.ecs-cluster-runner-policy.json
+}
+
+resource "aws_iam_role" "ecs-cluster-runner-role" {
+  name = "${var.app_name}-cluster-runner-role"
+  assume_role_policy = data.aws_iam_policy_document.instance-assume-role.json
+}
+
+resource "aws_iam_instance_profile" "ecs-cluster-runner-profile" {
+  name = "${var.app_name}-cluster-runner-iam-prof"
+  role = aws_iam_role.ecs-cluster-runner-role.name
+}
+
+/////////////////////////////////////////
+// ECS Cluster Definition
+/////////////////////////////////////////
+
 resource "aws_instance" "ecs-cluster-runner" {
-  //ami = local.aws_ecs_ami
   ami = data.aws_ami.ecs-ami.id 
   instance_type = var.cluster_runner_type
   subnet_id = element(aws_subnet.aws-subnet.*.id, 0)
