@@ -21,7 +21,7 @@ data "template_file" "nginx_app" {
 
 /////////////////////////////////////////
 // Define main.py with EC2 instance names
-// Upload docker image in ECR
+// Upload docker image to ECR
 /////////////////////////////////////////
 
 resource "null_resource" "instances" {

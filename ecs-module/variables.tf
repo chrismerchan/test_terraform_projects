@@ -92,6 +92,18 @@ variable "nginx_app_count" {
   default = 2
 }
 
+
+/*
+* Supported value for the task CPU and memory in your task definition 
+*
+* CPU value 	Memory value (MiB)
+* 256 (.25 vCPU) 	512 (0.5GB), 1024 (1GB), 2048 (2GB)
+* 512 (.5 vCPU) 	1024 (1GB), 2048 (2GB), 3072 (3GB), 4096 (4GB)
+* 1024 (1 vCPU) 	2048 (2GB), 3072 (3GB), 4096 (4GB), 5120 (5GB), 6144 (6GB), 7168 (7GB), 8192 (8GB)
+* 2048 (2 vCPU) 	Between 4096 (4GB) and 16384 (16GB) in increments of 1024 (1GB)
+* 4096 (4 vCPU) 	Between 8192 (8GB) and 30720 (30GB) in increments of 1024 (1GB) 
+*/
+
 variable "nginx_fargate_cpu" {
   description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
   default = "1024"
@@ -99,7 +111,7 @@ variable "nginx_fargate_cpu" {
 
 variable "nginx_fargate_memory" {
   description = "Fargate instance memory to provision (in MiB)"
-  default = "1024"
+  default = "2048"
 }
 
 /////////////////////////////////////////
